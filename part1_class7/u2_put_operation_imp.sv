@@ -18,17 +18,36 @@ class producer extends uvm_component;
     // there are 4 auguments, but 3rd and 4th are default.
     send = new("send", this);
   endfunction
+
+  task main_phase(uvm_phase phase);
+    phase.raise_objection(this);
+    send.put(data);
+    `uvm_info("PROD", $sformatf("Data Sent: %0d", data), UVM_NONE);
+    phase.drop_objection(this);
+  endtask
 endclass
 
 class consumer extends uvm_component;
   `uvm_component_utils(consumer)
 
   uvm_blocking_put_export #(int) recv;
+  // the second argument to the port implementation is where you will be implementing the method.
+  // the data will be received in a consumer.
+  // so here we need to add an implementation of a method so that we're able to receive the data
+  // in a consumer.
+  uvm_blocking_put_imp #(int, consumer) impl;
 
   function new(input string path = "consumer", uvm_component parent = null);
     super.new(path, parent);
     recv = new("recv", this);
+    impl = new("impl", this);
   endfunction
+
+  // The data will be the argument of this consumer.
+  // whatever data that put send to us will be accessible by the argument of put method.
+  task put(int data_rec);
+    `uvm_info("CONS", $sformatf("Data Received: %0d", data_rec), UVM_NONE);
+  endtask
 endclass
 
 class env extends uvm_env;
@@ -56,7 +75,9 @@ class env extends uvm_env;
     // so p.send.connect., and then we specify an export port.
     // so p.send.connect(c.recv);
     p.send.connect(c.recv);
-
+    // connect export to an implementation
+    // following the rule which is specified by uvm that is implementation port should be endpoint.
+    c.recv.connect(c.impl);
   endfunction
 endclass
 
@@ -83,28 +104,27 @@ end
 endmodule
 
 
-// 因為沒有加uvm_blocking_put_imp，所以跳fatal error
+// data and data_rec are the same, and there is no fatal error
 // # KERNEL: ASDB file was created in location /home/runner/dataset.asdb
 // # KERNEL: UVM_INFO @ 0: reporter [RNTST] Running test test...
-// # KERNEL: UVM_ERROR @ 0: uvm_test_top.e.c.recv [Connection Error] connection count of 0 does not meet required minimum of 1
-// # KERNEL: UVM_ERROR @ 0: uvm_test_top.e.p.send [Connection Error] connection count of 0 does not meet required minimum of 1
-// # KERNEL: UVM_FATAL @ 0: reporter [BUILDERR] stopping due to build errors
+// # KERNEL: UVM_INFO /home/runner/testbench.sv(49) @ 0: uvm_test_top.e.c [CONS] Data Received: 12
+// # KERNEL: UVM_INFO /home/runner/testbench.sv(25) @ 0: uvm_test_top.e.p [PROD] Data Sent: 12
 // # KERNEL: UVM_INFO /home/build/vlib1/vlib/uvm-1.2/src/base/uvm_report_server.svh(869) @ 0: reporter [UVM/REPORT/SERVER]
 // # KERNEL: --- UVM Report Summary ---
 // # KERNEL:
 // # KERNEL: ** Report counts by severity
-// # KERNEL: UVM_INFO :    2
+// # KERNEL: UVM_INFO :    4
 // # KERNEL: UVM_WARNING :    0
-// # KERNEL: UVM_ERROR :    2
-// # KERNEL: UVM_FATAL :    1
+// # KERNEL: UVM_ERROR :    0
+// # KERNEL: UVM_FATAL :    0
 // # KERNEL: ** Report counts by id
-// # KERNEL: [BUILDERR]     1
-// # KERNEL: [Connection Error]     2
+// # KERNEL: [CONS]     1
+// # KERNEL: [PROD]     1
 // # KERNEL: [RNTST]     1
 // # KERNEL: [UVM/RELNOTES]     1
 // # KERNEL:
-// # RUNTIME: Info: RUNTIME_0068 uvm_root.svh (135): $finish called.
-// # KERNEL: Time: 0 ns,  Iteration: 25,  Instance: /\package uvm_1_2.uvm_pkg\/uvm_phase/uvm_phase::m_run_phases,  Process: @INTERNAL#2212_0@.
+// # RUNTIME: Info: RUNTIME_0068 uvm_root.svh (521): $finish called.
+// # KERNEL: Time: 0 ns,  Iteration: 195,  Instance: /tb,  Process: @INITIAL#101_0@.
 // # KERNEL: stopped at time: 0 ns
 // # VSIM: Simulation has finished. There are no more test vectors to simulate.
 // # VSIM: Simulation has finished.

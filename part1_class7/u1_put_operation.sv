@@ -55,6 +55,7 @@ class env extends uvm_env;
     // so p.send, and then we call the connect method
     // so p.send.connect., and then we specify an export port.
     // so p.send.connect(c.recv);
+    // recv export is endpoint
     p.send.connect(c.recv);
 
   endfunction
