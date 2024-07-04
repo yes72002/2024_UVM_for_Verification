@@ -94,11 +94,11 @@ module tb;
 endmodule
 
 
-// data and data_rec are the same, and there is no fatal error
+// console 跟 port -> export -> implementation 沒有差別
 // # KERNEL: ASDB file was created in location /home/runner/dataset.asdb
 // # KERNEL: UVM_INFO @ 0: reporter [RNTST] Running test test...
-// # KERNEL: UVM_INFO /home/runner/testbench.sv(49) @ 0: uvm_test_top.e.c [CONS] Data Received: 12
-// # KERNEL: UVM_INFO /home/runner/testbench.sv(25) @ 0: uvm_test_top.e.p [PROD] Data Sent: 12
+// # KERNEL: UVM_INFO /home/runner/testbench.sv(47) @ 0: uvm_test_top.e.c [CONS] Data Received: 12
+// # KERNEL: UVM_INFO /home/runner/testbench.sv(27) @ 0: uvm_test_top.e.p [PROD] Data Sent: 12
 // # KERNEL: UVM_INFO /home/build/vlib1/vlib/uvm-1.2/src/base/uvm_report_server.svh(869) @ 0: reporter [UVM/REPORT/SERVER]
 // # KERNEL: --- UVM Report Summary ---
 // # KERNEL:
@@ -114,7 +114,7 @@ endmodule
 // # KERNEL: [UVM/RELNOTES]     1
 // # KERNEL:
 // # RUNTIME: Info: RUNTIME_0068 uvm_root.svh (521): $finish called.
-// # KERNEL: Time: 0 ns,  Iteration: 195,  Instance: /tb,  Process: @INITIAL#101_0@.
+// # KERNEL: Time: 0 ns,  Iteration: 195,  Instance: /tb,  Process: @INITIAL#91_0@.
 // # KERNEL: stopped at time: 0 ns
 // # VSIM: Simulation has finished. There are no more test vectors to simulate.
 // # VSIM: Simulation has finished.
