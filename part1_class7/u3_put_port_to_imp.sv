@@ -4,22 +4,24 @@ import uvm_pkg::*;
 class producer extends uvm_component;
   `uvm_component_utils(producer)
 
-  // This is the data that we want to communicate to consumer.
   int data = 12;
 
-  // send: provide the name to a class.
   uvm_blocking_put_port #(int) send;
 
   function new(input string path = "producer", uvm_component parent = null);
+    // we won't be adding anything other than super.new in constructor (function new)
     super.new(path, parent);
-    // The important thing to remember over here is we have added the class (uvm_blocking_put_port),
-    // so as soon as we add the constructor to our class (producer), we also need to add the constructor
-    // to this class (uvm_blocking_put_port) that we have added.
-    // there are 4 auguments, but 3rd and 4th are default.
+  endfunction
+
+  // move send class to build_phase
+  virtual function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
     send = new("send", this);
   endfunction
 
   task main_phase(uvm_phase phase);
+    // What we are doing is we are raising an objection, putting the data that
+    // we want to communicate to a consumer, and then we are dropong our objection.
     phase.raise_objection(this);
     send.put(data);
     `uvm_info("PROD", $sformatf("Data Sent: %0d", data), UVM_NONE);
@@ -30,21 +32,17 @@ endclass
 class consumer extends uvm_component;
   `uvm_component_utils(consumer)
 
-  uvm_blocking_put_export #(int) recv;
-  // the second argument to the port implementation is where you will be implementing the method.
-  // the data will be received in a consumer.
-  // so here we need to add an implementation of a method so that we're able to receive the data
-  // in a consumer.
   uvm_blocking_put_imp #(int, consumer) impl;
 
   function new(input string path = "consumer", uvm_component parent = null);
     super.new(path, parent);
-    recv = new("recv", this);
+  endfunction
+
+  virtual function void build_phase(uvm_phase phase);
+    super.build_phase(phase);
     impl = new("impl", this);
   endfunction
 
-  // The data will be the argument of this consumer.
-  // whatever data that put send to us will be accessible by the argument of put method.
   task put(int data_rec);
     `uvm_info("CONS", $sformatf("Data Received: %0d", data_rec), UVM_NONE);
   endtask
@@ -68,16 +66,8 @@ class env extends uvm_env;
 
   virtual function void connect_phase(uvm_phase phase);
     super.connect_phase(phase);
-    // How we perform a connection is
-    // first thing is the port class (send) is in the producer.
-    // it's name is p
-    // so p.send, and then we call the connect method
-    // so p.send.connect., and then we specify an export port.
-    // so p.send.connect(c.recv);
-    p.send.connect(c.recv);
-    // connect export to an implementation
-    // following the rule which is specified by uvm that is implementation port should be endpoint.
-    c.recv.connect(c.impl);
+    // port connect to implementation
+    p.send.connect(c.impl);
   endfunction
 endclass
 
