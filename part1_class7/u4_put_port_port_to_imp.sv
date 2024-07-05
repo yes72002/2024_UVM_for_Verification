@@ -52,18 +52,9 @@ class producer extends uvm_component;
 
   task main_phase(uvm_phase phase);
     phase.raise_objection(this);
-    port.put(data_thou);
-    `uvm_info("PROD", $sformatf("Data Sent: %0d", data_thou), UVM_NONE);
+    `uvm_info("PROD", $sformatf("Data Received in Producer: %0d", sub.data), UVM_NONE);
     phase.drop_objection(this);
   endtask
-
-  // task put(int data_thou);
-  //   `uvm_info("PROD", $sformatf("Data though: %0d", data_thou), UVM_NONE);
-  // endtask
-  function void put(int data_thou);
-    `uvm_info("PROD", $sformatf("Data Received in Producer: %0d", data_thou), UVM_NONE);
-    port.put(data_thou);
-  endfunction
 endclass
 
 class consumer extends uvm_component;
@@ -142,13 +133,28 @@ endmodule
 // console 跟 port -> export -> implementation 沒有差別
 // # KERNEL: ASDB file was created in location /home/runner/dataset.asdb
 // # KERNEL: UVM_INFO @ 0: reporter [RNTST] Running test test...
-// # KERNEL: UVM_INFO /home/runner/testbench.sv(47) @ 0: uvm_test_top.e.c [CONS] Data Received: 12
-// # KERNEL: UVM_INFO /home/runner/testbench.sv(27) @ 0: uvm_test_top.e.p [PROD] Data Sent: 12
+// # KERNEL: UVM_INFO /home/build/vlib1/vlib/uvm-1.2/src/base/uvm_root.svh(583) @ 0: reporter [UVMTOP] UVM testbench topology:
+// # KERNEL: ---------------------------------------------------
+// # KERNEL: Name             Type                   Size  Value
+// # KERNEL: ---------------------------------------------------
+// # KERNEL: uvm_test_top     test                   -     @335
+// # KERNEL:   e              env                    -     @348
+// # KERNEL:     c            consumer               -     @366
+// # KERNEL:       impl       uvm_blocking_put_imp   -     @375
+// # KERNEL:     p            producer               -     @357
+// # KERNEL:       port       uvm_blocking_put_port  -     @385
+// # KERNEL:       sub        subproducer            -     @395
+// # KERNEL:         subport  uvm_blocking_put_port  -     @404
+// # KERNEL: ---------------------------------------------------
+// # KERNEL:
+// # KERNEL: UVM_INFO /home/runner/testbench.sv(55) @ 0: uvm_test_top.e.p [PROD] Data Received in Producer: 12
+// # KERNEL: UVM_INFO /home/runner/testbench.sv(78) @ 0: uvm_test_top.e.c [CONS] Data Received: 12
+// # KERNEL: UVM_INFO /home/runner/testbench.sv(23) @ 0: uvm_test_top.e.p.sub [SUBPROD] Data Sent: 12
 // # KERNEL: UVM_INFO /home/build/vlib1/vlib/uvm-1.2/src/base/uvm_report_server.svh(869) @ 0: reporter [UVM/REPORT/SERVER]
 // # KERNEL: --- UVM Report Summary ---
 // # KERNEL:
 // # KERNEL: ** Report counts by severity
-// # KERNEL: UVM_INFO :    4
+// # KERNEL: UVM_INFO :    6
 // # KERNEL: UVM_WARNING :    0
 // # KERNEL: UVM_ERROR :    0
 // # KERNEL: UVM_FATAL :    0
@@ -156,10 +162,12 @@ endmodule
 // # KERNEL: [CONS]     1
 // # KERNEL: [PROD]     1
 // # KERNEL: [RNTST]     1
+// # KERNEL: [SUBPROD]     1
 // # KERNEL: [UVM/RELNOTES]     1
+// # KERNEL: [UVMTOP]     1
 // # KERNEL:
 // # RUNTIME: Info: RUNTIME_0068 uvm_root.svh (521): $finish called.
-// # KERNEL: Time: 0 ns,  Iteration: 195,  Instance: /tb,  Process: @INITIAL#91_0@.
+// # KERNEL: Time: 0 ns,  Iteration: 195,  Instance: /tb,  Process: @INITIAL#127_0@.
 // # KERNEL: stopped at time: 0 ns
 // # VSIM: Simulation has finished. There are no more test vectors to simulate.
 // # VSIM: Simulation has finished.
