@@ -1,0 +1,42 @@
+# VS Code
+__pycache__/
+.vscode/
+
+# python 100 days files
+*.zip
+
+
+
+test.sv
+test_tb.sv
+
+
+# jpg file
+Class4_UART.jpg
+Class4_UART_block.jpg
+Class4_UART_waveform.jpg
+Class5_SPI_1.jpg
+Class5_SPI_all.jpg
+Class5_SPI_controller_FSM.jpg
+Class5_SPI_memory_FSM.jpg
+Class6_I2C.jpg
+Class6_I2C_waveform.jpg
+Class6_I2C_block_diagram.jpg
+
+# vivado files
+*.exr
+
+
+
+
+
+
+# python secret key files
+secret_key.py
+
+# My Code
+
+
+# DotEnv configuration
+.env
+
