@@ -398,6 +398,7 @@ class mon extends uvm_monitor;
   uvm_analysis_port #(transaction) send;
   transaction tr;
   virtual apb_if vif;
+  reg slave_error;
 
   function new(input string inst = "mon", uvm_component parent = null);
     super.new(inst, parent);
@@ -415,28 +416,34 @@ class mon extends uvm_monitor;
   virtual task run_phase(uvm_phase phase);
     forever begin
       @(posedge vif.pclk);
+      // tr.PWDATA  = vif.pwdata;
+      // tr.PADDR   = vif.paddr;
+      // tr.PSLVERR = vif.pslverr;
+      // slave_error = vif.pslverr;
+      // `uvm_info("MON", $sformatf("DATA slave_error:%0d", slave_error), UVM_NONE);
+
       if (!vif.presetn) begin
         tr.op = rst;
         `uvm_info("MON", "SYSTEM RESET DETECTED", UVM_NONE);
         send.write(tr);
-      end else if (vif.presetn && vif.pwrite) begin
-        @(negedge vif.pready);
-        tr.op      = writed;
-        tr.PWDATA  = vif.pwdata;
-        tr.PADDR   = vif.paddr;
-        tr.PSLVERR = vif.pslverr;
-        `uvm_info("MON", $sformatf("DATA WRITE addr:%0d data:%0d slverr:%0d",
-          tr.PADDR, tr.PWDATA, tr.PSLVERR), UVM_NONE);
-        send.write(tr);
-      end else if (vif.presetn && !vif.pwrite) begin
-        @(negedge vif.pready);
-        tr.op      = readd;
-        tr.PADDR   = vif.paddr;
-        tr.PRDATA  = vif.prdata;
-        tr.PSLVERR = vif.pslverr;
-        `uvm_info("MON", $sformatf("DATA READ addr:%0d data:%0d slverr:%0d",
-          tr.PADDR, tr.PRDATA, tr.PSLVERR), UVM_NONE);
-        send.write(tr);
+      end else if (vif.pready) begin
+        if (vif.presetn && vif.pwrite) begin
+          tr.op      = writed;
+          tr.PWDATA  = vif.pwdata;
+          tr.PADDR   = vif.paddr;
+          tr.PSLVERR = vif.pslverr;
+          `uvm_info("MON", $sformatf("DATA WRITE addr:%0d data:%0d ready:%0d, slverr:%0d",
+            tr.PADDR, tr.PWDATA, vif.pready, tr.PSLVERR), UVM_NONE);
+          send.write(tr);
+        end else if (vif.presetn && !vif.pwrite) begin
+          tr.op      = readd;
+          tr.PADDR   = vif.paddr;
+          tr.PRDATA  = vif.prdata;
+          tr.PSLVERR = vif.pslverr;
+          `uvm_info("MON", $sformatf("DATA READ addr:%0d data:%0d slverr:%0d",
+            tr.PADDR, tr.PRDATA, tr.PSLVERR), UVM_NONE);
+          send.write(tr);
+        end
       end
     end
   endtask
@@ -470,8 +477,8 @@ class sco extends uvm_scoreboard;
         `uvm_info("SCO", "SLV ERROR during WRITE OP", UVM_NONE);
       end else begin
         arr[tr.PADDR] = tr.PWDATA;
-        `uvm_info("SCO", $sformatf("DATA WRITE OP  addr:%0d, wdata:%0d arr_wr:%0d",
-          tr.PADDR, tr.PWDATA, arr[tr.PADDR]), UVM_NONE);
+        `uvm_info("SCO", $sformatf("DATA WRITE OP  addr:%0d, wdata:%0d, arr_wr:%0d, slverr:%0d",
+          tr.PADDR, tr.PWDATA, arr[tr.PADDR], tr.PSLVERR), UVM_NONE);
       end
     // read operation
     end else if (tr.op == readd) begin
@@ -580,7 +587,8 @@ class test extends uvm_test;
 
   virtual task run_phase(uvm_phase phase);
     phase.raise_objection(this);
-    wrrdb.start(e.a.seqr);
+    // wrrdb.start(e.a.seqr);
+    werr.start(e.a.seqr);
     #20;
     phase.drop_objection(this);
   endtask

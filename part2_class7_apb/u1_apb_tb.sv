@@ -396,6 +396,7 @@ class driver extends uvm_driver #(transaction);
 
   task drive();
     reset_dut();
+    // call forever begin, because we need to be always ready to receive the data from a sequencer.
     forever begin
 
       seq_item_port.get_next_item(tr);
@@ -437,11 +438,10 @@ class driver extends uvm_driver #(transaction);
         tr.PRDATA  = vif.prdata;
         tr.PSLVERR = vif.pslverr;
       end
+      // notify the sequencer to send the next transaction.
       seq_item_port.item_done();
-
     end
   endtask
-
 
   virtual task run_phase(uvm_phase phase);
     drive();
@@ -512,6 +512,7 @@ class sco extends uvm_scoreboard;
   `uvm_component_utils(sco)
 
   uvm_analysis_imp#(transaction,sco) recv;
+  // 32 is the depth
   bit [31:0] arr[32] = '{default:0};
   bit [31:0] addr    = 0;
   bit [31:0] data_rd = 0;
