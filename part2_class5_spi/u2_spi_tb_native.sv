@@ -205,24 +205,31 @@ class driver extends uvm_driver #(transaction);
     vif.rst  <= 1'b0;
     vif.cs   <= 1'b0;
     vif.miso <= 1'b0;
+
+    // prepare the data to send
     data = {8'h00, tr.addr};
+
     @(posedge vif.clk);
     vif.miso <= 1'b0;  // read operation
+
+    // send address
     @(posedge vif.clk);
-    // send addr
     for (int i = 0; i < 8; i++) begin
       vif.miso <= data[i];
+      // send data in each clock edge
       @(posedge vif.clk);
     end
 
     // wait for data ready
     @(posedge vif.ready);
 
-    // sample output data
+    // sample the output data
     for (int i = 0; i < 8; i++) begin
       @(posedge vif.clk);
       datard[i] = vif.mosi;
     end
+
+    // wait for our operation done
     `uvm_info("DRV", $sformatf("DATA READ addr : %0d dout : %0d", tr.addr, datard), UVM_MEDIUM);
     @(posedge vif.op_done);
   endtask
