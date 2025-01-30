@@ -50,3 +50,37 @@ module tb;
     s2.print();
   end
 endmodule
+
+
+// # KERNEL: ASDB file was created in location /home/runner/dataset.asdb
+// # KERNEL: -------------------------------
+// # KERNEL: Name      Type      Size  Value
+// # KERNEL: -------------------------------
+// # KERNEL: s1        second    -     @335
+// # KERNEL:   f       first     -     @336
+// # KERNEL:     data  integral  4     'h2
+// # KERNEL: -------------------------------
+// # KERNEL: -------------------------------
+// # KERNEL: Name      Type      Size  Value
+// # KERNEL: -------------------------------
+// # KERNEL: s1        second    -     @337
+// # KERNEL:   f       first     -     @339
+// # KERNEL:     data  integral  4     'h2
+// # KERNEL: -------------------------------
+// # KERNEL: -------------------------------
+// # KERNEL: Name      Type      Size  Value
+// # KERNEL: -------------------------------
+// # KERNEL: s1        second    -     @335
+// # KERNEL:   f       first     -     @336
+// # KERNEL:     data  integral  4     'h2
+// # KERNEL: -------------------------------
+// # KERNEL: -------------------------------
+// # KERNEL: Name      Type      Size  Value
+// # KERNEL: -------------------------------
+// # KERNEL: s1        second    -     @337
+// # KERNEL:   f       first     -     @339
+// # KERNEL:     data  integral  4     'hc
+// # KERNEL: -------------------------------
+// # KERNEL: Simulation has finished. There are no more test vectors to simulate.
+// # VSIM: Simulation has finished.
+// Done

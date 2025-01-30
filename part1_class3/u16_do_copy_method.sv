@@ -28,6 +28,7 @@ class obj extends uvm_object;
     $cast(temp, rhs);
     super.do_copy(rhs);
     // this = this object, this class = self in python
+    // 其實可省略，https://www.chipverify.com/uvm/uvm-object-copy-clone
     this.a = temp.a;
     this.b = temp.b;
   endfunction

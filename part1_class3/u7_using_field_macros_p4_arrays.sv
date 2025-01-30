@@ -3,7 +3,7 @@ import uvm_pkg::*;
 
 class array extends uvm_object;
   // Static array
-  int arr1[3] = {1,2,3};
+  int arr1[3] = {1, 2, 3};
 
   // Dynamic array
   int arr2[];
@@ -14,7 +14,7 @@ class array extends uvm_object;
   // Associative array
   int arr4[int];
 
-  function new(string path="array");
+  function new(string path = "array");
     super.new(path);
   endfunction
 
@@ -25,9 +25,9 @@ class array extends uvm_object;
     `uvm_field_aa_int_int(arr4, UVM_DEFAULT);
   `uvm_object_utils_end
 
-  task  run();
+  task run();
     // Dynamic array value update
-    arr2 = new[3]; // add three elements in dynamic array
+    arr2 = new[3];  // add three elements in dynamic array
     arr2[0] = 2;
     arr2[1] = 2;
     arr2[2] = 2;

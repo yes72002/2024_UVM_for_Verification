@@ -27,11 +27,11 @@ class sequence1 extends uvm_sequence#(transaction);
   endfunction
 
   virtual task body();
-    repeat(3) begin
+    repeat (3) begin
       `uvm_info("SEQ1", "SEQ1 Started", UVM_NONE);
       trans = transaction::type_id::create("trans");
       start_item(trans);
-      assert(trans.randomize);
+      assert (trans.randomize);
       finish_item(trans);
       `uvm_info("SEQ1", "SEQ1 Ended", UVM_NONE);
     end

@@ -21,7 +21,7 @@ class transaction extends uvm_sequence_item;
   `uvm_object_utils_end
 endclass
 
-// you need to specify th parameter, parameter will be in most of the cases of transaction class
+// you need to specify the parameter, parameter will be in most of the cases of transaction class
 // We rarely do something more in uvm_sequence, usually use by default, or change the name
 class sequence1 extends uvm_sequence#(transaction);
   `uvm_object_utils(sequence1)
@@ -41,6 +41,19 @@ class sequence1 extends uvm_sequence#(transaction);
 
     virtual task body();
       `uvm_info("SEQ1", "BODY EXECUTED", UVM_NONE);
+      // 1. sequence.create_item
+      // 2. sequence request to sequencer
+      // 3. sequence wait for grant
+      // 6. sequencer request grant from sequence (sequencer向sequence請求授權)
+      // 7. sequence receive the grant
+      // 8. sequence.randomize()
+      // 9. sequence.send_request()
+      // 10. sequence.wait for item done
+      // 11. sequence send the sequence to the sequencer
+      // 12. sequencer send the sequence to the driver
+      // 15. driver send item_done to sequencer
+      // 16. sequencer send item_done to sequence
+      // 17. sequence receive item_done and go to next sequence
     endtask
 
     virtual task post_body();
@@ -73,16 +86,17 @@ class driver extends uvm_driver#(transaction);
       // And the sequencer will convert that data to a sequence and then we will be getting a sequence from a sequencer.
       // This will tell the sequencer that you cna send the sequence to a driver.
       seq_item_port.get_next_item(t);
-      // apply seq to DUT
-      // apply seq to DUT
-      // apply seq to DUT
-      // apply seq to DUT
+      // 4. get next item
+      // 5. req for sequencer
+      // 13. driver apply the sequence to the DUT
       // apply seq to DUT
       // we are already to receive the next sequence.
       // this acknoledgement is non-blocking in nature (by default).
       // we do not need to wait for sending the request for a next sequence until we receive the ack
-      // for the preivous sequence.
+      // for the previous sequence.
+      // -> before item_done, it will still get_next_item
       seq_item_port.item_done();
+      // 14. item done
     end
   endtask
 endclass

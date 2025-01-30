@@ -1,5 +1,5 @@
-module add(
-  input [3:0] a,b,
+module add (
+  input  [3:0] a, b,
   output [4:0] y
 );
 
@@ -7,7 +7,7 @@ module add(
 
 endmodule
 
-interface add_if();
+interface add_if ();
   logic [3:0] a;
   logic [3:0] b;
   logic [4:0] y;
