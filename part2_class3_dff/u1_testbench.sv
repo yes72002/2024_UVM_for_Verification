@@ -260,6 +260,7 @@ class env extends uvm_env;
     a = agent::type_id::create("a",this);
     s = sco::type_id::create("s",this);
     cfg = config_dff::type_id::create("cfg");
+    // provide an access to an agent (a)
     uvm_config_db #(config_dff)::set(this, "a", "cfg", cfg);
   endfunction
 

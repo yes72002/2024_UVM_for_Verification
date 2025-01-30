@@ -565,8 +565,8 @@ class test extends uvm_test;
   endfunction
 
   env e;
-  write_read wrrd;
-  writeb_readb wrrdb;
+  write_read wrrd; // (write + read) * 15
+  writeb_readb wrrdb; // write * 15 + read * 15
   write_data wdata;
   read_data rdata;
   write_err werr;
